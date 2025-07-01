@@ -4,6 +4,7 @@ function custom_eventbrite_shortcode_with_filter() {
     $filter_status = isset($_GET['event_status']) ? sanitize_text_field($_GET['event_status']) : 'all';
     $current_date = date('Y-m-d');
 
+    // Получаем все ивенты
     $events = get_posts([
         'post_type'      => 'eventbrite_events',
         'posts_per_page' => -1,
@@ -18,6 +19,7 @@ function custom_eventbrite_shortcode_with_filter() {
 
     ob_start();
 
+    // Форма фильтра
     ?>
     <form method="get" class="eventbrite-events-filter" style="margin-bottom: 20px;">
         <div class="form-first">
@@ -53,8 +55,11 @@ $event_link_source = get_post_meta($event_id, 'iee_source_link', true);
 
 $is_past_event = ($event_start_date < $current_date);
 $event_link_new = get_permalink($event_id);
-$event_link = $is_past_event ? $event_link_website : $event_link_new;
+$event_link = $is_past_event ? $event_link_new  : $event_link_website;
 
+/*if (!$event_link) {
+    $event_link = get_permalink($event_id);
+}*/
         $event_start_hour = get_post_meta($event_id, 'event_start_hour', true);
         $event_start_minute = get_post_meta($event_id, 'event_start_minute', true);
         $event_start_meridian = get_post_meta($event_id, 'event_start_meridian', true);
@@ -67,12 +72,16 @@ $event_description = $event->post_content;
 
         $output .= '<div class="col-iee-md-6 archive-event post-' . $event_id . ' eventbrite_events">';
 
+// Ссылка обернёт только кнопку Learn More
 $output .= '<a href="' . esc_url($event_link) . '" class="iee_event">';
 
+// Картинка
 $output .= '<div class="img_placeholder" style="background: url(\'' . esc_url($event_image) . '\') no-repeat center center; background-size: cover; width: 100%; height: 200px;"></div>';
 
+// Название
 $output .= '<div class="event_title" style="margin-top: 15px; font-weight: bold; font-size: 18px;">' . esc_html($event_title) . '</div>';
 
+// Описание — укоротим до 10 слов
 $words = explode(' ', wp_strip_all_tags($event_description));
 $short_description = implode(' ', array_slice($words, 0, 10));
 if (count($words) > 10) {
@@ -80,10 +89,11 @@ if (count($words) > 10) {
 }
 $output .= '<div class="event_description" style="margin-top: 10px;">' . esc_html($short_description) . '</div>';
 
+// Ссылка Learn More
 
 
-$output .= '</a>'; 
-$output .= '</div>'; 
+$output .= '</a>'; // .iee_event
+$output .= '</div>'; // .col-iee-md-6
     }
 
     $output .= '</div>';
