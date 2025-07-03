@@ -65,7 +65,7 @@ $event_link = $is_past_event ? $event_link_new  : $event_link_website;
         $event_start_meridian = get_post_meta($event_id, 'event_start_meridian', true);
         $event_venue = get_post_meta($event_id, 'venue_name', true) ?: 'Online Event';
 $event_description = $event->post_content;
-        $event_image = get_the_post_thumbnail_url($event_id, 'full') ?: 'https://via.placeholder.com/300';
+        $event_image = get_the_post_thumbnail_url($event_id, 'full') ?: 'https://via.placeholder.com/3000';
 
         $event_month = date('M', strtotime($event_start_date));
         $event_day = date('d', strtotime($event_start_date));
